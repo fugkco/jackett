@@ -14,7 +14,7 @@ RUN set -eux; \
     OS="$(uname)"; \
     LIBC=""; ldd /bin/ls | grep -qF 'musl' && LIBC="Musl"; \
     ARCH="$(uname -m | sed -e 's/aarch64/ARM64/' -e 's/armv.*/ARM32/' -e 's/x86_64/AMDx64/')"; \
-    wget "https://github.com/Jackett/Jackett/releases/download/${JACKETT_VERSION}/Jackett.Binaries.${OS}${LIBC}${ARCH}.tar.gz"  -qO- | tar -xzvf - -C /
+    wget "https://github.com/Jackett/Jackett/releases/download/${JACKETT_VERSION}/Jackett.Binaries.${OS}${LIBC}${ARCH}.tar.gz" -qO- | tar -xzvf - -C /
 
 FROM base
 
