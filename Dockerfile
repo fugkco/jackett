@@ -21,16 +21,17 @@ FROM base
 ARG JACKETT_VERSION=latest
 ARG BUILD_DATE
 
-LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.build-date=$BUILD_DATE
-LABEL org.label-schema.name="fugkco/jackett"
-LABEL org.label-schema.description="Jackett"
-LABEL org.label-schema.url="https://github.com/Jackett/Jackett"
-LABEL org.label-schema.vcs-url="https://github.com/fugkco/jackett-docker"
-LABEL org.label-schema.vcs-ref=${JACKETT_VERSION:-master}
-LABEL org.label-schema.vendor="Jackett"
-LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.label-schema.docker.cmd="podman run -it -v ./config:/config --rm -p 9117:9117 ghcr.io/fugkco/jackett"
+LABEL org.opencontainers.image.source="https://github.com/fugkco/jackett" \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name="fugkco/jackett" \
+    org.label-schema.description="Jackett" \
+    org.label-schema.url="https://github.com/Jackett/Jackett" \
+    org.label-schema.vcs-url="https://github.com/fugkco/jackett" \
+    org.label-schema.vcs-ref=${JACKETT_VERSION:-master} \
+    org.label-schema.vendor="Jackett" \
+    org.label-schema.version=$BUILD_VERSION \
+    org.label-schema.docker.cmd="podman run -it -v ./config:/config --rm -p 9117:9117 ghcr.io/fugkco/jackett"
 
 COPY --from=build /Jackett/ /jackett
 
