@@ -27,16 +27,18 @@ jobs:
         shell: bash
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          latest_version="$(curl -fsSL "https://api.github.com/repos/jackett/jackett/releases/latest" | jq -r .tag_name)"
-          echo "jacket_version=$latest_version" >> "$GITHUB_OUTPUT"
           
           tags=()
+          latest_version=""
           if [[ "${{ github.event_name == 'release' && github.event.action == 'created' }}" == "true" ]]; then
             tags=("latest" "$latest_version")
+            latest_version="$GITHUB_REF_NAME"
           else
             tags=("$(git rev-parse --short HEAD)")
+            latest_version="$(curl -fsSL "https://api.github.com/repos/jackett/jackett/releases/latest" | jq -r .tag_name)"
           fi
 
+          echo "jacket_version=$latest_version" >> "$GITHUB_OUTPUT"
           echo "tags<<$EOF" >> $GITHUB_OUTPUT
           printf 'ghcr.io/${{ github.repository_owner }}/jackett:%s\n' "${tags[@]}" >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
