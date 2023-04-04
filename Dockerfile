@@ -21,7 +21,7 @@ FROM base
 ARG JACKETT_VERSION=latest
 ARG BUILD_DATE
 
-LABEL org.opencontainers.image.source="https://github.com/fugkco/jackett" \
+LABEL org.opencontainers.image.source="https://github.com/fugkco/jackett-docker" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.name="fugkco/jackett" \
