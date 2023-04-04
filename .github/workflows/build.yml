@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "main"
+  release:
+    types: [created]
 
 jobs:
   docker:
@@ -21,9 +23,28 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - id: build_data
+        shell: bash
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          latest_version="$(curl -fsSL "https://api.github.com/repos/jackett/jackett/releases/latest" | jq -r .tag_name)"
+          echo "jacket_version=$latest_version" >> "$GITHUB_OUTPUT"
+          
+          tags=()
+          if [[ "${{ github.event_name == 'release' && github.event.action == 'created' }}" == "true" ]]; then
+            tags=("latest" "$latest_version")
+          else
+            tags=("$(git rev-parse --short HEAD)")
+          fi
+
+          echo "tags<<$EOF" >> $GITHUB_OUTPUT
+          printf 'ghcr.io/${{ github.repository_owner }}/jackett:%s\n' "${tags[@]}" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           platforms: linux/amd64,linux/arm,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/jackett:latest
+          build-args: |
+            JACKETT_VERSION=${{ steps.build_data.outputs.jacket_version }}
+          tags: ${{ steps.build_data.outputs.tags }}

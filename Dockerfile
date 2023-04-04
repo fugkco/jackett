@@ -2,15 +2,11 @@ FROM alpine:3.17 AS base
 
 FROM base AS build
 
-ARG JACKETT_VERSION=latest
-ARG DOTNET_TAG
-
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+ARG JACKETT_VERSION
 
 WORKDIR /jackett-src
 RUN set -eux; \
     apk add git; \
-    [ "${JACKETT_VERSION:-latest}" = "latest" ] && export JACKETT_VERSION="$(git ls-remote --tags https://github.com/Jackett/Jackett.git | sort -k2 -V -r | awk -F/ '{print $3}'  | head -n1)"; \
     OS="$(uname)"; \
     LIBC=""; ldd /bin/ls | grep -qF 'musl' && LIBC="Musl"; \
     ARCH="$(uname -m | sed -e 's/aarch64/ARM64/' -e 's/armv.*/ARM32/' -e 's/x86_64/AMDx64/')"; \
