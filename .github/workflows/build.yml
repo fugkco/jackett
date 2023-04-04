@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           platforms: linux/amd64,linux/arm,linux/arm64
-          push: true
+          push: ${{ github.event_name == 'release' && github.event.action == 'created' }}
           build-args: |
             JACKETT_VERSION=${{ steps.build_data.outputs.jacket_version }}
           tags: ${{ steps.build_data.outputs.tags }}
