@@ -1,9 +1,9 @@
 name: ci
 
 on:
-#  push:
-#    branches:
-#      - "main"
+  push:
+    branches:
+      - "main"
   release:
     types: [created]
 
@@ -26,14 +26,13 @@ jobs:
       - id: build_data
         shell: bash
         run: |
-          set -x
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           
           tags=()
           latest_version=""
           if [[ "${{ github.event_name == 'release' && github.event.action == 'created' }}" == "true" ]]; then
-            tags=("latest" "$latest_version")
             latest_version="$GITHUB_REF_NAME"
+            tags=("latest" "$latest_version")
           else
             tags=("$(git rev-parse --short HEAD)")
             latest_version="$(curl -fsSL "https://api.github.com/repos/jackett/jackett/releases/latest" | jq -r .tag_name)"
